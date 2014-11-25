@@ -1,7 +1,10 @@
 [Hovere To Do:]
 
 # Josh
-[x] (11/30/14) Learn the requirements for using multiple animations together in Unity3D
+[-] (11/30/14) Learn the requirements for using multiple animations together in Unity3D
+=>[x] State Machine (States and transitions)
+=>[x] Blend Tree (Blending animations)
+=>[ ] Multi-Layering (Waving and walking)
 [ ] (12/07/14) Create a basic movement engine
 [ ] (12/14/14) Import model and fine tune movement engine
 [ ] (12/21/14) Polish and use animation blending for smooth gameplay
