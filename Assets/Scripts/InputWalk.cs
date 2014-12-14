@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class InputWalk : MonoBehaviour {
+public class InputWalk : CharMovement {
+
+	public FootCheck footCollider;
 
 	Animator animator;
 	float walk = 0.0f;
 	float sprint = 0.0f;
 	float dir = 0.0f;
 	// Use this for initialization
-	void Start () {
+	protected override void Start () {
+		base.Start ();
 		animator = this.gameObject.GetComponent<Animator>();
 	}
 	
@@ -31,12 +34,14 @@ public class InputWalk : MonoBehaviour {
 		dir = dir + (h - dir) * 0.1f;
 	}
 
-	void FixedUpdate() {
+	protected override void FixedUpdate() {
+		base.FixedUpdate();
 		if (animator)
 		{
 			animator.SetFloat("Walk", walk);
 			animator.SetFloat("Sprint", sprint);
 			animator.SetFloat("Turn", dir);
+			animator.SetBool("OnGround", this.cc.isGrounded || footCollider.isGrounded);
 		}
 	}
 }
