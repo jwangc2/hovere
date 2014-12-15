@@ -22,16 +22,22 @@ public class CharMovement : MonoBehaviour {
 		float dt = Time.fixedDeltaTime;
 		this.velocity += Vector3.down * grav * dt;
 		
+		// If on the ground, reset velocity
+		if (OnGround())
+			this.velocity.y = 0f;
+
 		// For custom movement after applying gravity
 		Step();
-		
-		// If on the ground, reset velocity
-		if (cc.isGrounded)
-			this.velocity.y = 0f;
+
+		// Debug.Log("Speed: " + this.velocity.magnitude);
 		
 		cc.Move(velocity * dt);
 	}
 
 	protected virtual void Step() {
+	}
+
+	protected virtual bool OnGround() {
+		return cc.isGrounded;
 	}
 }

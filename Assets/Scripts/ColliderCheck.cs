@@ -1,14 +1,15 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class FootCheck : MonoBehaviour {
-	public bool isGrounded {
+public class ColliderCheck : MonoBehaviour {
+	public string tagComp = "";
+	public bool isMeeting {
 		get {
-			return _isGrounded;
+			return _isMeeting;
 		}
 	}
 
-	public bool _isGrounded = false;
+	public bool _isMeeting = false;
 	// Use this for initialization
 	void Start () {
 	
@@ -21,19 +22,19 @@ public class FootCheck : MonoBehaviour {
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.tag == "Ground")
-			_isGrounded = true;
+		if (other.tag == tagComp)
+			_isMeeting = true;
 	}
 
 	void OnTriggerStay(Collider other)
 	{
-		if (other.tag == "Ground")
-			_isGrounded = true;
+		if (other.tag == tagComp)
+			_isMeeting = true;
 	}
 
 	void OnTriggerExit(Collider other)
 	{
-		if (other.tag == "Ground")
-			_isGrounded = false;
+		if (other.tag == tagComp)
+			_isMeeting = false;
 	}
 }
