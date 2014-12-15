@@ -4,7 +4,7 @@ using System.Collections;
 public class InputWalk : CharMovement {
 
 	public ColliderCheck[] footChecks;
-	public ColliderCheck bodyCheck;
+	public CollisionCheck bodyCheck;
 
 	public Animator animator;
 	float walk = 0.0f;
@@ -78,18 +78,48 @@ public class InputWalk : CharMovement {
 
 		AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
 		if (info.nameHash == idleState) {
-			this.velocity = Vector3.zero;
+			this.velocity.x = 0f;
+			this.velocity.z = 0f;
 		} else if (info.nameHash == walkState) {
 			this.velocity = (cc.transform.forward * 1f);
 		} else if (info.nameHash == sprintState) {
 			this.velocity = cc.transform.forward * 6f;
-		} else if (info.nameHash == wallrunState) {
-			this.velocity = cc.transform.forward * 6f;
+		} else if (info.nameHash == wallrunState && bodyCheck.isMeeting) {
+			Collision c = bodyCheck.collMeeting;
+
+			if (c != null)
+			{
+				Vector3 norm = c.contacts[0].normal;
+				Vector3 cross = Vector3.Cross(cc.transform.forward, norm);
+
+				Vector3 newDir = Vector3.Cross(norm, Vector3.up * Mathf.Sign(cross.y)).normalized;
+
+				animator.transform.LookAt(animator.transform.position + newDir + norm * -0.5f);
+				this.velocity = newDir * 6f;
+			}
+			else
+			{
+				this.velocity = cc.transform.forward * 6f;
+			}
 			this.velocity.y = 0f;
 		}
 
-		if (Input.GetButtonDown("Jump") && OnGround())
-		{			this.velocity = cc.transform.up * 150f;
+		if (Input.GetButtonDown("Jump") && (OnGround() || onwall))
+		{
+			this.velocity.y = 150f;
+			if (onwall)
+			{
+				Collision c = bodyCheck.collMeeting;
+				if (c != null)
+				{
+					Vector3 norm = c.contacts[0].normal;
+					this.velocity.y = 10f;
+					this.velocity += norm * 10f;
+					Vector3 look = animator.transform.position + this.velocity;
+					look.y = animator.transform.position.y;
+					animator.transform.LookAt(look);
+				}
+			}
 		}
 	}
 

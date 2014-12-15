@@ -1,9 +1,10 @@
 ﻿<Properties>
-  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\ColliderCheck.cs">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\InputWalk.cs">
     <Files>
-      <File FileName="Assets\Scripts\CharMovement.cs" Line="23" Column="45" />
-      <File FileName="Assets\Scripts\InputWalk.cs" Line="73" Column="1" />
+      <File FileName="Assets\Scripts\InputWalk.cs" Line="30" Column="42" />
+      <File FileName="Assets\Scripts\CharMovement.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\InputWalk.cs" Line="1" Column="1" />
       <File FileName="Assets\Standard Assets\Scripts\Camera Scripts\SmoothFollow.js" Line="1" Column="1" />
       <File FileName="Assets\Scripts\CamPOV.cs" Line="1" Column="1" />
       <File FileName="Assets\Scripts\ColliderCheck.cs" Line="6" Column="25" />

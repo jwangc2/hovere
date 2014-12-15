@@ -49,6 +49,7 @@
      <Compile Include="Assets\Scripts\CamPOV.cs" />
      <Compile Include="Assets\Scripts\CharMovement.cs" />
      <Compile Include="Assets\Scripts\ColliderCheck.cs" />
+     <Compile Include="Assets\Scripts\CollisionCheck.cs" />
      <Compile Include="Assets\Scripts\InputWalk.cs" />
      <None Include="Assets\Raw Mocap Data\Animations\_CompleteAnimationList.txt" />
   </ItemGroup>
