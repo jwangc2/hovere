@@ -20,18 +20,20 @@ public class CharMovement : MonoBehaviour {
 
 	protected virtual void Move() {
 		float dt = Time.fixedDeltaTime;
-		this.velocity += Vector3.down * grav * dt;
 		
 		// If on the ground, reset velocity
-		if (OnGround())
+		if (OnGround() && this.velocity.y < 0f)
+		{
 			this.velocity.y = 0f;
+		}
 
 		// For custom movement after applying gravity
 		Step();
 
 		// Debug.Log("Speed: " + this.velocity.magnitude);
-		
 		cc.Move(velocity * dt);
+
+		this.velocity += Vector3.down * grav * dt;
 	}
 
 	protected virtual void Step() {
