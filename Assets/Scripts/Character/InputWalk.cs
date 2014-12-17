@@ -14,12 +14,14 @@ public class InputWalk : CharMovement {
 
 	bool touchingWall = false;
 	bool canWallRun = false;
+	bool facingWall = false;
 
 	private int idleState;
 	private int walkState;
 	private int fallState;
 	private int sprintState;
 	private int wallrunState;
+	private int wallSlideState;
 
 	#endregion
 
@@ -35,6 +37,7 @@ public class InputWalk : CharMovement {
 		fallState = Animator.StringToHash("Base Layer.Falling");
 		sprintState = Animator.StringToHash("Base Layer.SprintState");
 		wallrunState = Animator.StringToHash("Base Layer.WallRun");
+		wallSlideState = Animator.StringToHash("Base Layer.WallSlide");
 	}
 	
 	// Update is called once per frame
@@ -64,6 +67,7 @@ public class InputWalk : CharMovement {
 		Collision c = bodyCheck.collMeeting;
 		bool vertCheck = false;
 		bool horzCheck = false;
+		bool horzCheck2 = false; // for determining if we are facing the wall
 
 		if (touchingWall && c != null)
 		{
@@ -72,6 +76,9 @@ public class InputWalk : CharMovement {
 			Vector3 normRight = Vector3.Cross(norm, Vector3.up);
 			Vector3 normUp = Vector3.Cross(norm, Vector3.left);
 
+			/** Part I ->
+			 * Run checks for the velocity angles relative to the surface normal 
+			 */
 			// Find the right and up components (relative to surf. normal) of velocity using dot projection
 			Vector3 compRight = TKVecMath.DotProj(velocity, normRight);
 			Vector3 compUp = TKVecMath.DotProj(velocity, normUp);
@@ -85,10 +92,25 @@ public class InputWalk : CharMovement {
 			Vector3 horzVel = velocity - compUp;
 			float horzAngle = Vector3.Angle(horzVel, norm * -1f);
 			horzCheck = (horzAngle >= 35f && horzAngle < 90f);
+
+			/** Part II ->
+			 * Run checks for the forward angles relative to the surface normal 
+			 */
+			Vector3 faceFwd = animator.transform.forward;
+			Vector3 faceUp = TKVecMath.DotProj(faceFwd, normUp);
+			Vector3 horzFace = faceFwd - faceUp;
+			float ang = Vector3.Angle(horzFace, norm * -1f);
+			horzCheck2 = (ang < 35f);
 		}
 
-
 		canWallRun = (touchingWall && vertCheck && horzCheck);
+		if (canWallRun) // determining the maginitude is a costly operation (requires sqrt)
+		{
+			bool speedCheck = (velocity.magnitude >= 2f);
+			canWallRun = (canWallRun && speedCheck);
+		}
+
+		facingWall = (touchingWall && horzCheck2);
 
 		// Apply the state variables
 		if (animator)
@@ -99,6 +121,7 @@ public class InputWalk : CharMovement {
 			animator.SetBool("OnGround", OnGround());
 			animator.SetBool("TouchingWall", touchingWall);
 			animator.SetBool("CanWallRun", canWallRun);
+			animator.SetBool("FacingWall", facingWall);
 		}
 
 
@@ -187,6 +210,26 @@ public class InputWalk : CharMovement {
 
 			// Friction (ideal)
 			this.velocity.y = 0f;
+		}
+		else if (currentState == wallSlideState && touchingWall)
+		{
+			// Slow down the y velocity some, but make sure it doesnt exceed 2x the gravity
+			velocity.y = velocity.y * 0.9f;
+			velocity.y = Mathf.Min(velocity.y, grav * -2f * dt);
+
+			// Slow down x and z components a ton
+			velocity.x = velocity.x * 0.5f;
+			velocity.z = velocity.z * 0.5f;
+
+			// Look at the wall if possible
+			Collision c = bodyCheck.collMeeting;
+			if (c != null)
+			{
+				Vector3 look = c.contacts[0].normal * -1f; // Normal * -1 points straight at the wall
+				look.y = 0f;                               // Keep the up vector parallel to the world up vector (stay upright)
+				animator.transform.LookAt(animator.transform.position + look);
+			}
+
 		}
 
 		// If the player presses the jump key
