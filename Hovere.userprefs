@@ -1,12 +1,9 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="MonoDevelop.Default" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\InputWalk.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets\Scripts\Character\InputWalk.cs">
     <Files>
-      <File FileName="Assets\Scripts\InputWalk.cs" Line="111" Column="36" />
-      <File FileName="Assets\Scripts\InputWalk.cs" Line="111" Column="36" />
-      <File FileName="Assets\Scripts\CharMovement.cs" Line="23" Column="3" />
-      <File FileName="Assets\Scripts\ColliderCheck.cs" Line="1" Column="1" />
-      <File FileName="Assets\Scripts\CollisionCheck.cs" Line="1" Column="1" />
+      <File FileName="Assets\Scripts\Tool\TKVecMath.cs" Line="9" Column="9" />
+      <File FileName="Assets\Scripts\Character\InputWalk.cs" Line="87" Column="51" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

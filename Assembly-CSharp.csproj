@@ -46,11 +46,12 @@
 	</Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\CamPOV.cs" />
-     <Compile Include="Assets\Scripts\CharMovement.cs" />
-     <Compile Include="Assets\Scripts\ColliderCheck.cs" />
-     <Compile Include="Assets\Scripts\CollisionCheck.cs" />
-     <Compile Include="Assets\Scripts\InputWalk.cs" />
+     <Compile Include="Assets\Scripts\Camera\CamPOV.cs" />
+     <Compile Include="Assets\Scripts\Character\CharMovement.cs" />
+     <Compile Include="Assets\Scripts\Character\InputWalk.cs" />
+     <Compile Include="Assets\Scripts\Tool\ColliderCheck.cs" />
+     <Compile Include="Assets\Scripts\Tool\CollisionCheck.cs" />
+     <Compile Include="Assets\Scripts\Tool\TKVecMath.cs" />
      <None Include="Assets\Raw Mocap Data\Animations\_CompleteAnimationList.txt" />
   </ItemGroup>
   <ItemGroup>

@@ -24,16 +24,24 @@ public class CharMovement : MonoBehaviour {
 		// If on the ground, reset velocity
 		if (OnGround() && this.velocity.y < 0f)
 		{
+			int layerMask = 1 << 8; // Mask for player
+			layerMask = ~layerMask; // Everything but the player
+
+			if (Physics.Raycast(cc.transform.position, Vector3.down, 0.25f))
+				cc.Move(Vector3.down * 0.25f);
+
 			this.velocity.y = 0f;
 		}
+
+		this.velocity += Vector3.down * grav * dt;
 
 		// For custom movement after applying gravity
 		Step();
 
 		// Debug.Log("Speed: " + this.velocity.magnitude);
-		cc.Move(velocity * dt);
+		Debug.Log("Y-Speed: " + this.velocity.y);
 
-		this.velocity += Vector3.down * grav * dt;
+		cc.Move(velocity * dt);
 	}
 
 	protected virtual void Step() {
