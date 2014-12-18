@@ -160,6 +160,9 @@ public class InputWalk : CharMovement {
 		AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
 		int currentState = info.nameHash;
 
+		bool onwall = (currentState == wallrunState);
+		bool onground = OnGround();
+
 		if (currentState == idleState) {
 			// If we're trying to turn while sprinting, jank it
 			TurnInPlace(1f, dt);
@@ -174,12 +177,12 @@ public class InputWalk : CharMovement {
 
 			animator.transform.LookAt(animator.transform.position + look);
 		}
-		else if (currentState == walkState) {
+		else if (currentState == walkState && onground) {
 			// Move forward at a speed of 1
 			Vector3 spd = cc.transform.forward * 1f;
 			this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
 		} 
-		else if (currentState == sprintState) {
+		else if (currentState == sprintState && onground) {
 			// If we're trying to turn while sprinting, jank it
 			TurnInPlace(2f, dt);
 
@@ -237,8 +240,6 @@ public class InputWalk : CharMovement {
 		}
 
 		// If the player presses the jump key
-		bool onwall = (currentState == wallrunState);
-		bool onground = OnGround();
 		if (Input.GetButtonDown("Jump"))
 		{
 			if (onground) // AKA a normal jump
