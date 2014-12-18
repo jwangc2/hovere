@@ -23,6 +23,8 @@ public class InputWalk : CharMovement {
 	private int wallrunState;
 	private int wallSlideState;
 
+	private int prevState = -1;
+
 	#endregion
 
 
@@ -187,6 +189,8 @@ public class InputWalk : CharMovement {
 		} 
 		else if (currentState == wallrunState && touchingWall) {
 			// Check for collision info (we need the normal)
+
+			Vector3 newVel = cc.transform.forward * 6f;
 			Collision c = bodyCheck.collMeeting;
 			if (c != null)
 			{
@@ -200,16 +204,16 @@ public class InputWalk : CharMovement {
 				animator.transform.LookAt(animator.transform.position + newDir + norm * -0.5f);
 
 				// Move parallel to the wall with a speed of 6
-				this.velocity = newDir * 6f;
-			}
-			else
-			{
-				// Best guess, just keep moving forward
-				this.velocity = cc.transform.forward * 6f;
+				newVel = newDir * 6f;
 			}
 
-			// Friction (ideal)
-			this.velocity.y = 0f;
+			// Don't touch the y-component - let gravity do it's thing
+			newVel.y = this.velocity.y;
+			this.velocity = newVel;
+
+			// Friction
+			this.velocity.y = this.velocity.y * 0.8f;
+
 		}
 		else if (currentState == wallSlideState && touchingWall)
 		{
@@ -218,8 +222,8 @@ public class InputWalk : CharMovement {
 			velocity.y = Mathf.Min(velocity.y, grav * -2f * dt);
 
 			// Slow down x and z components a ton
-			velocity.x = velocity.x * 0.5f;
-			velocity.z = velocity.z * 0.5f;
+			velocity.x = velocity.x * 0.9f;
+			velocity.z = velocity.z * 0.9f;
 
 			// Look at the wall if possible
 			Collision c = bodyCheck.collMeeting;
@@ -273,8 +277,9 @@ public class InputWalk : CharMovement {
 					}
 				}
 			}
-
 		}
+
+		prevState = currentState;
 	}
 
 	protected override bool OnGround() 
