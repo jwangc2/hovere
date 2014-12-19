@@ -5,10 +5,14 @@
 =>[x] State Machine (States and transitions)
 =>[x] Blend Tree (Blending animations)
 =>[ ] Multi-Layering (Waving and walking)
-[-] (12/07/14) Create a basic movement engine
+[x] (12/07/14) Create a basic movement engine
 =>[x] Gravity + Movement via CharacterController
-=>[ ] Continuous motion (velocity) between animations
+=>[x] Continuous motion (velocity) between animations
 [ ] (12/14/14) Import model and fine tune movement engine
+=>[ ] Import character model
+=>[x] Wall Interaction (Run, Jump, Slide)
+=>[ ] Smooth rotations
+=>[ ] Ledges
 [ ] (12/21/14) Polish and use animation blending for smooth gameplay
 
 # Jon
