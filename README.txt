@@ -18,4 +18,4 @@
 # Jon
 [ ] (12/07/14) Work with Josh to test animation requirements + begin creating and rigging new player model
 [ ] (12/14/14) Finish model and rigging
-[ ] (12/21/14) Animate character run / run-stop and import properly
+[x] (12/21/14) -A-ni-----------------------st-op- and import properly
