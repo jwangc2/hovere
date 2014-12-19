@@ -32,6 +32,10 @@ public class CharMovement : MonoBehaviour {
 
 			this.velocity.y = 0f;
 		}
+		else
+		{
+			Debug.LogWarning("Gravity is in effect");
+		}
 
 		this.velocity += Vector3.down * grav * dt;
 

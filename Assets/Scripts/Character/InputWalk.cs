@@ -15,6 +15,7 @@ public class InputWalk : CharMovement {
 	bool touchingWall = false;
 	bool canWallRun = false;
 	bool facingWall = false;
+	bool wallJump = false;
 
 	private int idleState;
 	private int walkState;
@@ -120,10 +121,12 @@ public class InputWalk : CharMovement {
 			animator.SetFloat("Walk", walk);
 			animator.SetFloat("Sprint", sprint);
 			animator.SetFloat("Turn", dir);
+			animator.SetFloat("YSpeed", velocity.y);
 			animator.SetBool("OnGround", OnGround());
 			animator.SetBool("TouchingWall", touchingWall);
 			animator.SetBool("CanWallRun", canWallRun);
 			animator.SetBool("FacingWall", facingWall);
+			animator.SetBool("WallJump", wallJump);
 		}
 
 
@@ -239,6 +242,7 @@ public class InputWalk : CharMovement {
 
 		}
 
+		wallJump = false;
 		// If the player presses the jump key
 		if (Input.GetButtonDown("Jump"))
 		{
@@ -275,6 +279,8 @@ public class InputWalk : CharMovement {
 						// Get off the wall a bit (to unregister touchingWall)
 						cc.transform.position += norm * 1f;
 						animator.SetBool("touchingWall", false);
+
+						wallJump = true;
 					}
 				}
 			}
