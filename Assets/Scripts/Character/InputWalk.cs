@@ -130,7 +130,7 @@ public class InputWalk : CharMovement {
 		float signum = (fwd.magnitude > 1f) ? 1f : 0f; // fake digital
 		movingFwd = signum * 3f;              // stretch for blend tree powahs
 
-		float yspd = Mathf.Max(Mathf.Min(velocity.y, 3f), -3f);
+		float yspd = Mathf.Max(Mathf.Min(velocity.y, 3f), -5f);
 
 		// Apply the state variables
 		if (animator)
