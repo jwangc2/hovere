@@ -8,6 +8,9 @@ public class InputWalk : CharMovement {
 	public CollisionCheck bodyCheck;
 	public Animator animator;
 
+	Quaternion targetRot;
+
+	// State control parameters
 	float walk = 0.0f;
 	float sprint = 0.0f;
 	float dir = 0.0f;
@@ -17,6 +20,7 @@ public class InputWalk : CharMovement {
 	bool facingWall = false;
 	bool wallJump = false;
 
+	// State Hash IDs
 	private int idleState;
 	private int walkState;
 	private int fallState;
@@ -33,6 +37,8 @@ public class InputWalk : CharMovement {
 	// Use this for initialization
 	protected override void Start () {
 		base.Start ();
+
+		targetRot = animator.transform.rotation;
 
 		// Determine the ID's related to each state
 		idleState = Animator.StringToHash("Base Layer.Idle");
@@ -60,6 +66,10 @@ public class InputWalk : CharMovement {
 
 		// Turning (interpolated for smoothness)
 		dir = dir + (h - dir) * 0.1f;
+
+
+		animator.transform.rotation = Quaternion.Lerp(animator.transform.rotation, targetRot, 7f * Time.deltaTime);
+		UpdateCharacterController();
 	}
 
 	protected override void FixedUpdate() {
@@ -178,12 +188,13 @@ public class InputWalk : CharMovement {
 			Vector3 look = animator.transform.forward;
 			look.y = 0f;
 
-			animator.transform.LookAt(animator.transform.position + look);
+			LookAt(animator.transform.position + look);
 		}
 		else if (currentState == walkState && onground) {
 			// Move forward at a speed of 1
 			Vector3 spd = cc.transform.forward * 1f;
 			this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
+			targetRot = animator.transform.rotation;
 		} 
 		else if (currentState == sprintState && onground) {
 			// If we're trying to turn while sprinting, jank it
@@ -207,7 +218,7 @@ public class InputWalk : CharMovement {
 				Vector3 newDir = Vector3.Cross(norm, Vector3.up * Mathf.Sign(cross.y)).normalized;
 
 				// Look somewhat diagonally
-				animator.transform.LookAt(animator.transform.position + newDir + norm * -0.5f);
+				LookAt(animator.transform.position + newDir + norm * -0.5f);
 
 				// Move parallel to the wall with a speed of 6
 				newVel = newDir * 6f;
@@ -237,7 +248,7 @@ public class InputWalk : CharMovement {
 			{
 				Vector3 look = c.contacts[0].normal * -1f; // Normal * -1 points straight at the wall
 				look.y = 0f;                               // Keep the up vector parallel to the world up vector (stay upright)
-				animator.transform.LookAt(animator.transform.position + look);
+				LookAt(animator.transform.position + look);
 			}
 
 		}
@@ -274,11 +285,13 @@ public class InputWalk : CharMovement {
 						// turn to face where you will be moving
 						Vector3 look = animator.transform.position + this.velocity;
 						look.y = animator.transform.position.y;                     // but make sure the y-axis is locked
-						animator.transform.LookAt(look);
+						LookAt(look);
+
+						Debug.LogError("Wall jump");
 
 						// Get off the wall a bit (to unregister touchingWall)
 						cc.transform.position += norm * 1f;
-						animator.SetBool("touchingWall", false);
+						animator.SetBool("TouchingWall", false);
 
 						wallJump = true;
 					}
@@ -324,8 +337,21 @@ public class InputWalk : CharMovement {
 	void TurnInPlace(float degrees, float dt)
 	{
 		// If we're trying to turn while doing something, jank it
-		animator.transform.RotateAround(animator.transform.up, dir * degrees * dt);
-		UpdateCharacterController();
+		RotateAround(animator.transform.up, dir * degrees * dt);
+	}
+
+	void LookAt(Vector3 pos)
+	{
+		Quaternion save = animator.transform.rotation;
+		animator.transform.LookAt(pos);
+		targetRot = animator.transform.rotation;
+		animator.transform.rotation = save;
+	}
+
+	void RotateAround(Vector3 axis, float degrees)
+	{
+		animator.transform.RotateAround(axis, degrees);
+		targetRot = animator.transform.rotation;
 	}
 
 	#endregion
