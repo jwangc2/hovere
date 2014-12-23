@@ -14,6 +14,7 @@ public class InputWalk : CharMovement {
 	float walk = 0.0f;
 	float sprint = 0.0f;
 	float dir = 0.0f;
+	float movingFwd = 0.0f;
 
 	bool touchingWall = false;
 	bool canWallRun = false;
@@ -125,18 +126,25 @@ public class InputWalk : CharMovement {
 
 		facingWall = (touchingWall && horzCheck2);
 
+		Vector3 fwd = new Vector3(velocity.x, 0f, velocity.z);
+		float signum = (fwd.magnitude > 1f) ? 1f : 0f; // fake digital
+		movingFwd = signum * 3f;              // stretch for blend tree powahs
+
+		float yspd = Mathf.Max(Mathf.Min(velocity.y, 3f), -3f);
+
 		// Apply the state variables
 		if (animator)
 		{
 			animator.SetFloat("Walk", walk);
 			animator.SetFloat("Sprint", sprint);
 			animator.SetFloat("Turn", dir);
-			animator.SetFloat("YSpeed", velocity.y);
+			animator.SetFloat("YSpeed", yspd);
 			animator.SetBool("OnGround", OnGround());
 			animator.SetBool("TouchingWall", touchingWall);
 			animator.SetBool("CanWallRun", canWallRun);
 			animator.SetBool("FacingWall", facingWall);
 			animator.SetBool("WallJump", wallJump);
+			animator.SetFloat("MovingFwd", movingFwd);
 		}
 
 
