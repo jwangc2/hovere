@@ -8,6 +8,11 @@ public class InputWalk : CharMovement {
 	public CollisionCheck bodyCheck;
 	public Animator animator;
 
+	public float walkSpd = 1f;
+	public float sprintMaxSpd = 6f;
+	public float sprintAccel = 1f;
+	public float fric = 0.25f;
+
 	Quaternion targetRot;
 
 	// State control parameters
@@ -158,6 +163,10 @@ public class InputWalk : CharMovement {
 	protected override void Move() {
 		base.Move();
 
+		// Friction
+		if (OnGround())
+			Accelerate(fric * -1f, 0f, 10f);
+
 		// Get the state info and act according the current state
 		AnimatorStateInfo info = animator.GetCurrentAnimatorStateInfo(0);
 
@@ -267,7 +276,7 @@ public class InputWalk : CharMovement {
 	void Walk(float dt)
 	{
 		// Move forward at a speed of 1
-		Vector3 spd = cc.transform.forward * 1f;
+		Vector3 spd = cc.transform.forward * walkSpd;
 		this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
 		targetRot = animator.transform.rotation;
 	}
@@ -277,9 +286,9 @@ public class InputWalk : CharMovement {
 		// If we're trying to turn while sprinting, jank it
 		TurnInPlace(2f, dt);
 		
-		// Move forward at a speed of 6
-		Vector3 spd = cc.transform.forward * 6f;
-		this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
+		// Move forward at 1m/s^2 to a max speed of 6
+		SnapVelocityDir(cc.transform.forward);
+		Accelerate(sprintAccel, 0f, sprintMaxSpd);
 	}
 
 	void WallRun()
@@ -372,6 +381,23 @@ public class InputWalk : CharMovement {
 
 
 	#region Helper Functions
+
+	void Accelerate(float acc, float minSpd, float maxSpd)
+	{
+		Vector2 fwd = new Vector2(this.velocity.x, this.velocity.z);
+		float newSpd = Mathf.Min(Mathf.Max(fwd.magnitude + acc, minSpd), maxSpd);
+		fwd = fwd.normalized * newSpd;
+		this.velocity.x = fwd.x;
+		this.velocity.z = fwd.y;
+	}
+
+	void SnapVelocityDir(Vector3 newDir)
+	{
+		Vector3 dir = new Vector3(newDir.x, 0f, newDir.z);
+		Vector2 fwd = new Vector2(this.velocity.x, this.velocity.z);
+		Vector3 newFwd = dir.normalized;
+		this.velocity = newFwd * fwd.magnitude;
+	}
 
 	// Matches the animator position to the cc position
 	void UpdateAnimator()
