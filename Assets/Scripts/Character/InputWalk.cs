@@ -185,80 +185,23 @@ public class InputWalk : CharMovement {
 		bool onground = OnGround();
 
 		if (currentState == idleState) {
-			// If we're trying to turn while sprinting, jank it
-			TurnInPlace(1f, dt);
-
-			// Stay still
-			this.velocity.x = 0f;
-			this.velocity.z = 0f;
+			Idle(dt);
 		}
 		else if (currentState == fallState) {
-			Vector3 look = animator.transform.forward;
-			look.y = 0f;
-
-			LookAt(animator.transform.position + look);
+			Fall();
 		}
 		else if (currentState == walkState && onground) {
-			// Move forward at a speed of 1
-			Vector3 spd = cc.transform.forward * 1f;
-			this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
-			targetRot = animator.transform.rotation;
+			Walk(dt);
 		} 
 		else if (currentState == sprintState && onground) {
-			// If we're trying to turn while sprinting, jank it
-			TurnInPlace(2f, dt);
-
-			// Move forward at a speed of 6
-			Vector3 spd = cc.transform.forward * 6f;
-			this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
+			Sprint(dt);
 		} 
 		else if (currentState == wallrunState && touchingWall) {
-			// Check for collision info (we need the normal)
-
-			Vector3 newVel = cc.transform.forward * 6f;
-			Collision c = bodyCheck.collMeeting;
-			if (c != null)
-			{
-				Vector3 norm = c.contacts[0].normal;
-				Vector3 cross = Vector3.Cross(cc.transform.forward, norm); // crossing with this will det. left vs right running
-
-				// Determine the new direction to move in
-				Vector3 newDir = Vector3.Cross(norm, Vector3.up * Mathf.Sign(cross.y)).normalized;
-
-				// Look somewhat diagonally
-				LookAt(animator.transform.position + newDir + norm * -0.5f);
-
-				// Move parallel to the wall with a speed of 6
-				newVel = newDir * 6f;
-			}
-
-			// Don't touch the y-component - let gravity do it's thing
-			newVel.y = this.velocity.y;
-			this.velocity = newVel;
-
-			// Friction
-			this.velocity.y = this.velocity.y * 0.8f;
-
+			WallRun();
 		}
 		else if (currentState == wallSlideState && touchingWall)
 		{
-			// Slow down the y velocity some, but make sure it doesnt exceed 2x the gravity
-			velocity.y = velocity.y * 0.9f;
-			velocity.y = Mathf.Min(velocity.y, grav * -2f * dt);
-
-			// Slow down x and z components a ton
-			velocity.x = velocity.x * 0.9f;
-			velocity.z = velocity.z * 0.9f;
-
-			// Look at the wall if possible
-			Collision c = bodyCheck.collMeeting;
-			if (c != null)
-			{
-				Vector3 look = c.contacts[0].normal * -1f; // Normal * -1 points straight at the wall
-				look.y = 0f;                               // Keep the up vector parallel to the world up vector (stay upright)
-				LookAt(animator.transform.position + look);
-			}
-
+			WallSlide(dt);
 		}
 
 		wallJump = false;
@@ -267,42 +210,14 @@ public class InputWalk : CharMovement {
 		{
 			if (onground) // AKA a normal jump
 			{
-				// Nomrally jump with vert. speed of 7
-				this.velocity.y = 7f;
-				
-				// Get off the ground and make sure it doesn't register as being on the ground (and setting y-velocity to 0)
-				cc.transform.position += Vector3.up * 0.5f;
-				cc.Move(Vector3.zero);
+				JumpGround();
 			}
 			else // If off the ground
 			{
-
 				// ...and touching the wall
 				if (touchingWall)
 				{
-					Collision c = bodyCheck.collMeeting;
-					if (c != null)
-					{
-						// y-velocity of 10
-						this.velocity.y = 10f;
-
-						// jump away from the wall with a speed of 3
-						Vector3 norm = c.contacts[0].normal;
-						this.velocity += norm * 3f;
-
-						// turn to face where you will be moving
-						Vector3 look = animator.transform.position + this.velocity;
-						look.y = animator.transform.position.y;                     // but make sure the y-axis is locked
-						LookAt(look);
-
-						Debug.LogError("Wall jump");
-
-						// Get off the wall a bit (to unregister touchingWall)
-						cc.transform.position += norm * 1f;
-						animator.SetBool("TouchingWall", false);
-
-						wallJump = true;
-					}
+					JumpWall();
 				}
 			}
 		}
@@ -329,6 +244,133 @@ public class InputWalk : CharMovement {
 	#endregion
 
 
+	#region State Functions
+
+	void Idle(float dt)
+	{
+		// If we're trying to turn while sprinting, jank it
+		TurnInPlace(1f, dt);
+		
+		// Stay still
+		this.velocity.x = 0f;
+		this.velocity.z = 0f;
+	}
+
+	void Fall()
+	{
+		Vector3 look = animator.transform.forward;
+		look.y = 0f;
+		
+		LookAt(animator.transform.position + look);
+	}
+
+	void Walk(float dt)
+	{
+		// Move forward at a speed of 1
+		Vector3 spd = cc.transform.forward * 1f;
+		this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
+		targetRot = animator.transform.rotation;
+	}
+
+	void Sprint(float dt)
+	{
+		// If we're trying to turn while sprinting, jank it
+		TurnInPlace(2f, dt);
+		
+		// Move forward at a speed of 6
+		Vector3 spd = cc.transform.forward * 6f;
+		this.velocity = new Vector3(spd.x, this.velocity.y, spd.z);
+	}
+
+	void WallRun()
+	{
+		// Check for collision info (we need the normal)
+		
+		Vector3 newVel = cc.transform.forward * 6f;
+		Collision c = bodyCheck.collMeeting;
+		if (c != null)
+		{
+			Vector3 norm = c.contacts[0].normal;
+			
+			// Determine the new direction to move in, based on the yaw direction (L / R)
+			int yawSign = GetNormYawSign(norm, cc.transform.forward);
+			Vector3 newDir = Vector3.Cross(norm * -1f, Vector3.up * yawSign).normalized;
+			
+			// Look somewhat diagonally
+			LookAt(animator.transform.position + newDir + norm * -0.5f);
+			
+			// Move parallel to the wall with a speed of 6
+			newVel = newDir * 6f;
+		}
+		
+		// Don't touch the y-component - let gravity do it's thing
+		newVel.y = this.velocity.y;
+		this.velocity = newVel;
+		
+		// Friction
+		this.velocity.y = this.velocity.y * 0.8f;
+	}
+
+	void WallSlide(float dt)
+	{
+		// Slow down the y velocity some, but make sure it doesnt exceed 2x the gravity
+		velocity.y = velocity.y * 0.9f;
+		velocity.y = Mathf.Min(velocity.y, grav * -2f * dt);
+		
+		// Slow down x and z components a ton
+		velocity.x = velocity.x * 0.9f;
+		velocity.z = velocity.z * 0.9f;
+		
+		// Look at the wall if possible
+		Collision c = bodyCheck.collMeeting;
+		if (c != null)
+		{
+			Vector3 look = c.contacts[0].normal * -1f; // Normal * -1 points straight at the wall
+			look.y = 0f;                               // Keep the up vector parallel to the world up vector (stay upright)
+			LookAt(animator.transform.position + look);
+		}
+	}
+
+	void JumpGround()
+	{
+		// Nomrally jump with vert. speed of 7
+		this.velocity.y = 7f;
+		
+		// Get off the ground and make sure it doesn't register as being on the ground (and setting y-velocity to 0)
+		cc.transform.position += Vector3.up * 0.5f;
+		cc.Move(Vector3.zero);
+	}
+
+	void JumpWall()
+	{
+		Collision c = bodyCheck.collMeeting;
+		if (c != null)
+		{
+			// y-velocity of 10
+			this.velocity.y = 10f;
+			
+			// jump away from the wall with a speed of 3
+			Vector3 norm = c.contacts[0].normal;
+			this.velocity += norm * 3f;
+			
+			// turn to face where you will be moving
+			Vector3 look = animator.transform.position + this.velocity;
+			look.y = animator.transform.position.y;                     // but make sure the y-axis is locked
+			LookAt(look);
+			
+			Debug.LogError("Wall jump");
+			
+			// Get off the wall a bit (to unregister touchingWall)
+			cc.transform.position += norm * 1f;
+			animator.SetBool("TouchingWall", false);
+			
+			wallJump = true;
+		}
+	}
+
+	#endregion
+
+
 	#region Helper Functions
 
 	// Matches the animator position to the cc position
@@ -340,6 +382,13 @@ public class InputWalk : CharMovement {
 	void UpdateCharacterController()
 	{
 		cc.transform.rotation = animator.transform.rotation;
+	}
+
+	// Gets the yaw sign relative to a surface normal (+ for right, - for left)
+	int GetNormYawSign(Vector3 norm, Vector3 facing)
+	{
+		Vector3 cross = Vector3.Cross(facing, norm);
+		return (int) (Mathf.Sign(cross.y)) * -1;
 	}
 
 	void TurnInPlace(float degrees, float dt)

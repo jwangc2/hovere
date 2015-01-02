@@ -1,1 +1,1 @@
-Warning: None triangle mesh: m_bottom_teeth (file: 'C:\Users\Josh\Desktop\repos\Hovere\Assets\Models\Larry\Larry_test.fbx') [ (line 0)]
+Warning: None triangle mesh: m_bottom_teeth (file: 'C:\Users\Josh\Desktop\repos\Hovere\Assets\Animations\Larry_normal_skid.fbx') [ (line 0)]
