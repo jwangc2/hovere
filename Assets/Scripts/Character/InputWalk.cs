@@ -20,6 +20,7 @@ public class InputWalk : CharMovement {
 	float sprint = 0.0f;
 	float dir = 0.0f;
 	float movingFwd = 0.0f;
+	float wallDir = 0.0f;
 
 	bool touchingWall = false;
 	bool canWallRun = false;
@@ -150,6 +151,7 @@ public class InputWalk : CharMovement {
 			animator.SetBool("FacingWall", facingWall);
 			animator.SetBool("WallJump", wallJump);
 			animator.SetFloat("MovingFwd", movingFwd);
+			animator.SetFloat("WallDir", wallDir);
 		}
 
 
@@ -303,6 +305,7 @@ public class InputWalk : CharMovement {
 			
 			// Determine the new direction to move in, based on the yaw direction (L / R)
 			int yawSign = GetNormYawSign(norm, cc.transform.forward);
+			wallDir = yawSign;
 			Vector3 newDir = Vector3.Cross(norm * -1f, Vector3.up * yawSign).normalized;
 			
 			// Look somewhat diagonally
