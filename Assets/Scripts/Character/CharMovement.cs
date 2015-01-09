@@ -54,4 +54,9 @@ public class CharMovement : MonoBehaviour {
 	protected virtual bool OnGround() {
 		return cc.isGrounded;
 	}
+
+	public Vector3 GetVelocity()
+	{
+		return this.velocity;
+	}
 }
