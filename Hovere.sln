@@ -1,11 +1,9 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2008
 
-Project("{44D64610-2F70-DED4-672C-54620FD84170}") = "Hovere", "Assembly-CSharp-firstpass.csproj", "{EA990385-B511-E563-3053-AF2EC2A2A0F0}"
+Project("{9C303B70-5D0F-13DB-EE54-4E09022C85F6}") = "hovere", "Assembly-CSharp-firstpass.csproj", "{4C9D5182-1957-EF90-96EE-072890CEFF21}"
 EndProject
-Project("{44D64610-2F70-DED4-672C-54620FD84170}") = "Hovere", "Assembly-CSharp.csproj", "{387AF9B2-7165-FF78-1717-C87C0A5C896E}"
-EndProject
-Project("{44D64610-2F70-DED4-672C-54620FD84170}") = "Hovere", "Assembly-UnityScript-firstpass.unityproj", "{5E33BE1F-ABA3-8C61-8384-A560E11AA12A}"
+Project("{9C303B70-5D0F-13DB-EE54-4E09022C85F6}") = "hovere", "Assembly-CSharp.csproj", "{FDF00E84-4166-2DD5-6671-942E3F2B51CE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,18 +11,14 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{EA990385-B511-E563-3053-AF2EC2A2A0F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EA990385-B511-E563-3053-AF2EC2A2A0F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EA990385-B511-E563-3053-AF2EC2A2A0F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EA990385-B511-E563-3053-AF2EC2A2A0F0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{387AF9B2-7165-FF78-1717-C87C0A5C896E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{387AF9B2-7165-FF78-1717-C87C0A5C896E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{387AF9B2-7165-FF78-1717-C87C0A5C896E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{387AF9B2-7165-FF78-1717-C87C0A5C896E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E33BE1F-ABA3-8C61-8384-A560E11AA12A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E33BE1F-ABA3-8C61-8384-A560E11AA12A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E33BE1F-ABA3-8C61-8384-A560E11AA12A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E33BE1F-ABA3-8C61-8384-A560E11AA12A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C9D5182-1957-EF90-96EE-072890CEFF21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C9D5182-1957-EF90-96EE-072890CEFF21}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C9D5182-1957-EF90-96EE-072890CEFF21}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C9D5182-1957-EF90-96EE-072890CEFF21}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FDF00E84-4166-2DD5-6671-942E3F2B51CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FDF00E84-4166-2DD5-6671-942E3F2B51CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FDF00E84-4166-2DD5-6671-942E3F2B51CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FDF00E84-4166-2DD5-6671-942E3F2B51CE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -47,5 +41,4 @@ Global
 		$3.inheritsScope = text/plain
 		$3.scope = text/plain
 	EndGlobalSection
-
 EndGlobal
